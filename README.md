@@ -1,6 +1,6 @@
-# Diganta News
+# Digonto News
 
-[Live website](https://bhalukbeautiful.vercel.app)
+[Live website](https://digontonews.vercel.app)
 
 React + Vite + Tailwind CSS Bengali news frontend, built from direct Playwright inspection of mzamin.com. Uses the supplied দিগন্ত নিউজ brand and a transparent logo cutout.
 
