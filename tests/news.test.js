@@ -1,6 +1,6 @@
 import {test, afterEach} from 'node:test';
 import assert from 'node:assert/strict';
-import {API_BASE, TENANT_SLUG, loadNewsDataset, loadArticle, publicationDate} from '../src/services/news.js';
+import {API_BASE, TENANT_SLUG, loadNewsDataset, loadArticle, publicationDate, formatAuthor} from '../src/services/news.js';
 
 const originalFetch = globalThis.fetch;
 afterEach(() => {globalThis.fetch = originalFetch;});
@@ -59,4 +59,13 @@ test('publication dates use Bangladesh time across midnight', () => {
   assert.equal(publicationDate(article.published_at), '2026-11-07');
   assert.equal(publicationDate(null), '');
   assert.equal(publicationDate('invalid'), '');
+});
+
+test('formats author name from user object or falls back to protibedok', () => {
+  assert.equal(formatAuthor({first_name: 'মেহেদী', last_name: 'হাসান'}), 'মেহেদী হাসান');
+  assert.equal(formatAuthor({first_name: 'মেহেদী', last_name: ''}), 'মেহেদী');
+  assert.equal(formatAuthor({email: 'reporter@example.com'}), 'reporter');
+  assert.equal(formatAuthor('কামাল হোসেন'), 'কামাল হোসেন');
+  assert.equal(formatAuthor(null), 'নিজস্ব প্রতিবেদক');
+  assert.equal(formatAuthor({}), 'নিজস্ব প্রতিবেদক');
 });

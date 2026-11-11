@@ -22,6 +22,21 @@ export function publicationDate(value) {
   }).format(new Date(value));
 }
 
+export function formatAuthor(author) {
+  if (!author) return 'নিজস্ব প্রতিবেদক';
+  if (typeof author === 'string') {
+    const trimmed = author.trim();
+    return trimmed || 'নিজস্ব প্রতিবেদক';
+  }
+  const fullName = [author.first_name, author.last_name].filter(Boolean).join(' ').trim();
+  if (fullName) return fullName;
+  if (author.email) {
+    const local = author.email.split('@')[0].trim();
+    if (local) return local;
+  }
+  return 'নিজস্ব প্রতিবেদক';
+}
+
 function articleFromApi(article) {
   const publishedAt = article.published_at || article.created_at;
   let content = article.content || '';
@@ -34,9 +49,11 @@ function articleFromApi(article) {
   const categoryName = isJatiyo ? 'সারাদেশ' : (article.category?.name || 'অনলাইন');
   const categorySlug = isJatiyo ? 'country' : article.category?.slug;
   const date = publicationDate(publishedAt) ? new Date(publishedAt).toLocaleDateString('bn-BD', {timeZone: 'Asia/Dhaka', dateStyle: 'long'}) : '';
+  const author = formatAuthor(article.author);
   return {
     id: article.slug,
     title: article.title,
+    author,
     image: article.featured_image_url || '',
     summary: article.ai_summary || '',
     aiSummary: article.ai_summary || '',

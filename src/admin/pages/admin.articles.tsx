@@ -258,8 +258,10 @@ function ArticlesPage() {
                     >
                       {a.title}
                     </button>
-                    {a.author?.email && (
-                      <div className="text-xs text-neutral-400 mt-0.5">লেখক: {a.author.email}</div>
+                    {a.author && (
+                      <div className="text-xs text-neutral-400 mt-0.5">
+                        লেখক: {[a.author.first_name, a.author.last_name].filter(Boolean).join(" ") || a.author.email}
+                      </div>
                     )}
                     {a.status === "REJECTED" && a.rejection_feedback ? (
                       <div className="text-xs text-red-600 mt-1">
@@ -396,7 +398,9 @@ function ArticlesPage() {
           {previewArticle && (
             <div className="space-y-4 text-sm">
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-500 border-b pb-2">
-                <span>লেখক: {previewArticle.author?.email}</span>
+                <span>
+                  লেখক: {[previewArticle.author?.first_name, previewArticle.author?.last_name].filter(Boolean).join(" ") || previewArticle.author?.email || "অজানা"}
+                </span>
                 <span>ক্যাটাগরি: {previewArticle.category?.name}</span>
                 <span>স্ট্যাটাস: {previewArticle.status}</span>
                 <span>লেখার সময় (BD): {formatBdDateTime(previewArticle.created_at || previewArticle.updated_at)}</span>

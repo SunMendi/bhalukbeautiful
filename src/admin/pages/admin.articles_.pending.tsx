@@ -106,7 +106,7 @@ function PendingQueue() {
                     {a.title}
                   </h3>
                   <p className="text-xs text-neutral-500 mt-1">
-                    লেখক: {a.author?.email ?? "অজানা"} • ক্যাটাগরি: {a.category?.name ?? "N/A"} •{" "}
+                    লেখক: {[a.author?.first_name, a.author?.last_name].filter(Boolean).join(" ") || a.author?.email || "অজানা"} • ক্যাটাগরি: {a.category?.name ?? "N/A"} •{" "}
                     {formatBdDateTime(a.created_at || a.updated_at)}
                   </p>
                   {a.content && (

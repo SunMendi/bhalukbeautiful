@@ -357,4 +357,5 @@ input{accent-color:var(--brand-blue)}
 .news-loading .loading-card:hover{transform:none;box-shadow:none}
 .news-loading .latest{width:100%}
 .news-loading .lead-col,.news-loading .center-grid-wrap,.news-loading .home-sidebar{min-width:0}
+.mobile-author{font-weight:700;font-size:15px;margin-bottom:6px;color:var(--text)}
 @media(max-width:680px){.news-loading .home-top>div{width:100%}}
