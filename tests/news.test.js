@@ -61,11 +61,14 @@ test('publication dates use Bangladesh time across midnight', () => {
   assert.equal(publicationDate('invalid'), '');
 });
 
-test('formats author name from user object or falls back to protibedok', () => {
-  assert.equal(formatAuthor({first_name: 'মেহেদী', last_name: 'হাসান'}), 'মেহেদী হাসান');
-  assert.equal(formatAuthor({first_name: 'মেহেদী', last_name: ''}), 'মেহেদী');
-  assert.equal(formatAuthor({email: 'reporter@example.com'}), 'reporter');
-  assert.equal(formatAuthor('কামাল হোসেন'), 'কামাল হোসেন');
+test('formats author label from role or selection without showing personal names', () => {
+  assert.equal(formatAuthor({role: 'EDITOR'}), 'সম্পাদক');
+  assert.equal(formatAuthor({role: 'EIC'}), 'সম্পাদক');
+  assert.equal(formatAuthor(null, 'EDITOR'), 'সম্পাদক');
+  assert.equal(formatAuthor('সম্পাদক'), 'সম্পাদক');
+  assert.equal(formatAuthor({role: 'REPORTER'}), 'নিজস্ব প্রতিবেদক');
+  assert.equal(formatAuthor(null, 'REPORTER'), 'নিজস্ব প্রতিবেদক');
+  assert.equal(formatAuthor({first_name: 'মেহেদী', last_name: 'হাসান'}), 'নিজস্ব প্রতিবেদক');
   assert.equal(formatAuthor(null), 'নিজস্ব প্রতিবেদক');
   assert.equal(formatAuthor({}), 'নিজস্ব প্রতিবেদক');
 });

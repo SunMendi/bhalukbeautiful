@@ -197,6 +197,7 @@ export type Category = {
 };
 
 export type ArticleStatus = "DRAFT" | "PENDING" | "PUBLISHED" | "REJECTED";
+export type ArticleAuthorLabel = "REPORTER" | "EDITOR";
 export type ApiArticle = {
   id: number;
   title: string;
@@ -204,6 +205,7 @@ export type ApiArticle = {
   content?: string;
   category: Category;
   author: User;
+  author_label?: ArticleAuthorLabel | string;
   status: ArticleStatus;
   rejection_feedback?: string;
   districts?: { id: number; name: string; slug: string }[];

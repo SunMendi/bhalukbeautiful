@@ -2,7 +2,7 @@ import { useNavigate } from "@/admin/navigation";
 
 import { useEffect, useState, type FormEvent } from "react";
 import { AdminLayout, PageHeader } from "@/components/admin/AdminLayout";
-import { isEditorRole, articlesApi, categoriesApi, type Category } from "@/lib/api-client";
+import { isEditorRole, isOwnerRole, articlesApi, categoriesApi, type Category } from "@/lib/api-client";
 import { useAdminAuth } from "@/lib/admin-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +40,13 @@ function NewArticlePage() {
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [districtSlug, setDistrictSlug] = useState<string>("none");
+  const [authorLabel, setAuthorLabel] = useState<string>("REPORTER");
   const [isBreaking, setIsBreaking] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
 
   const isEditor = isEditorRole(user?.role);
+  const isAdmin = isOwnerRole(user?.role);
 
   useEffect(() => {
     categoriesApi
@@ -106,6 +108,9 @@ function NewArticlePage() {
       form.append("category_id", categoryId);
       if (districtSlug && districtSlug !== "none") {
         form.append("districts", districtSlug);
+      }
+      if (isAdmin && authorLabel) {
+        form.append("author_label", authorLabel);
       }
       form.append("is_breaking", String(isBreaking));
       if (imageFile) form.append("image", imageFile);
@@ -209,6 +214,24 @@ function NewArticlePage() {
             </SelectContent>
           </Select>
         </div>
+
+        {isAdmin && (
+          <div className="space-y-2">
+            <Label>লেখকের পরিচিতি / লেবেল</Label>
+            <Select value={authorLabel} onValueChange={setAuthorLabel}>
+              <SelectTrigger>
+                <SelectValue placeholder="লেবেল নির্বাচন করুন" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="REPORTER">নিজস্ব প্রতিবেদক</SelectItem>
+                <SelectItem value="EDITOR">সম্পাদক</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-neutral-500">
+              সংবাদ পাতায় লেখকের নাম দেখানোর পরিবর্তে এই লেবেলটি প্রদর্শিত হবে।
+            </p>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="featuredImage">প্রধান ছবি (Featured Image)</Label>

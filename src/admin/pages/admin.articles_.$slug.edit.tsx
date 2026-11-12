@@ -2,7 +2,8 @@ import { useNavigate } from "@/admin/navigation";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, type FormEvent } from "react";
 import { AdminLayout, PageHeader } from "@/components/admin/AdminLayout";
-import { articlesApi, categoriesApi, type ApiArticle, type Category } from "@/lib/api-client";
+import { isOwnerRole, articlesApi, categoriesApi, type ApiArticle, type Category } from "@/lib/api-client";
+import { useAdminAuth } from "@/lib/admin-auth";
 import { formatBdDateTime } from "@/lib/date-format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,8 @@ export default () => (
 function EditArticlePage() {
   const { slug = "" } = useParams();
   const navigate = useNavigate();
+  const { user } = useAdminAuth();
+  const isAdmin = isOwnerRole(user?.role);
   const [article, setArticle] = useState<ApiArticle | null>(null);
   const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +45,7 @@ function EditArticlePage() {
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [districtSlug, setDistrictSlug] = useState<string>("none");
+  const [authorLabel, setAuthorLabel] = useState<string>("REPORTER");
   const [isBreaking, setIsBreaking] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -56,6 +60,8 @@ function EditArticlePage() {
         setCategoryId(String(a.category.id));
         const currentDistrict = a.districts && a.districts.length > 0 ? a.districts[0].slug : "none";
         setDistrictSlug(currentDistrict);
+        const resolvedLabel = a.author_label || (a.author?.role === "EDITOR" || a.author?.role === "EIC" ? "EDITOR" : "REPORTER");
+        setAuthorLabel(resolvedLabel);
         setIsBreaking(a.is_breaking);
       })
       .catch((err) => setError(err instanceof Error ? err.message : "লোড ব্যর্থ"))
@@ -102,6 +108,9 @@ function EditArticlePage() {
         form.append("districts", districtSlug);
       } else {
         form.append("districts", "");
+      }
+      if (isAdmin && authorLabel) {
+        form.append("author_label", authorLabel);
       }
       form.append("is_breaking", String(isBreaking));
       if (imageFile) form.append("image", imageFile);
@@ -170,6 +179,23 @@ function EditArticlePage() {
             </SelectContent>
           </Select>
         </div>
+        {isAdmin && (
+          <div className="space-y-2">
+            <Label>লেখকের পরিচিতি / লেবেল</Label>
+            <Select value={authorLabel} onValueChange={setAuthorLabel}>
+              <SelectTrigger>
+                <SelectValue placeholder="লেবেল নির্বাচন করুন" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="REPORTER">নিজস্ব প্রতিবেদক</SelectItem>
+                <SelectItem value="EDITOR">সম্পাদক</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-neutral-500">
+              সংবাদ পাতায় লেখকের নাম দেখানোর পরিবর্তে এই লেবেলটি প্রদর্শিত হবে।
+            </p>
+          </div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="featuredImage">প্রধান ছবি (Featured Image)</Label>
           {(imagePreview || article.featured_image_url) && (
