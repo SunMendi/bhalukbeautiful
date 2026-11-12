@@ -109,7 +109,7 @@ function NewArticlePage() {
       if (districtSlug && districtSlug !== "none") {
         form.append("districts", districtSlug);
       }
-      if (isAdmin && authorLabel) {
+      if (authorLabel) {
         form.append("author_label", authorLabel);
       }
       form.append("is_breaking", String(isBreaking));
@@ -215,23 +215,21 @@ function NewArticlePage() {
           </Select>
         </div>
 
-        {isAdmin && (
-          <div className="space-y-2">
-            <Label>লেখকের পরিচিতি / লেবেল</Label>
-            <Select value={authorLabel} onValueChange={setAuthorLabel}>
-              <SelectTrigger>
-                <SelectValue placeholder="লেবেল নির্বাচন করুন" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="REPORTER">নিজস্ব প্রতিবেদক</SelectItem>
-                <SelectItem value="EDITOR">সম্পাদক</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-neutral-500">
-              সংবাদ পাতায় লেখকের নাম দেখানোর পরিবর্তে এই লেবেলটি প্রদর্শিত হবে।
-            </p>
-          </div>
-        )}
+        <div className="space-y-2">
+          <Label>লেখকের পরিচিতি / লেবেল</Label>
+          <Select value={authorLabel} onValueChange={setAuthorLabel}>
+            <SelectTrigger>
+              <SelectValue placeholder="লেবেল নির্বাচন করুন" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="REPORTER">নিজস্ব প্রতিবেদক</SelectItem>
+              <SelectItem value="EDITOR">সম্পাদক</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-neutral-500">
+            সংবাদ পাতায় লেখকের নাম দেখানোর পরিবর্তে এই লেবেলটি প্রদর্শিত হবে।
+          </p>
+        </div>
 
         <div className="space-y-2">
           <Label htmlFor="featuredImage">প্রধান ছবি (Featured Image)</Label>
